@@ -1,78 +1,27 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<UserContext>();
+builder.Services.AddTransient<RatingService>();
+builder.Services.AddTransient<SignupService>();
+builder.Services.AddTransient<UpdatingScoresService>();
+builder.Services.AddTransient<DeleteService>();
+builder.Services.AddTransient<UpdateUserService>();
 
 var app = builder.Build();
 
-app.MapGet("/users/rating", async (UserContext db) =>
-{
-    List<User> users = await db.Users.ToListAsync();
-    var sorted_users = from user in users
-                       where user.Score != 0
-                       orderby user.Score descending
-                       select user;
-    return sorted_users;
-});
+app.MapGet("/users/rating", async (UserContext db, RatingService ratingService) => await ratingService.RatingAsync(db));
 
-app.MapPost("/signup", async (User user, UserContext db) =>
-{
-    List<User> users = await db.Users.ToListAsync();
+app.MapPost("/signup/{username}", async (string username, UserContext db, SignupService signupService) => await signupService.SignupAsync(username, db));
 
-    foreach (User u in users) 
-    {
-        if (u.Username == user.Username) throw new Exception("A user with this username already exists!");
-    }
-    
-    await db.Users.AddAsync(user);
-    await db.SaveChangesAsync();
-    return Results.Json(user);  
-    
-});
+app.MapPut("/users/{username}/{score:int}", async (string username, int score, UserContext db, UpdatingScoresService updatingScoresService) => await updatingScoresService.UpdatingScoresAsync(username, score, db));
 
-app.MapPut("/users/{username}/{score:int}", async (string username, int score, UserContext db) =>
-{
-    User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
-    if (user == null) return Results.NotFound(new { message = "User not found!" });
-    if (user.Score < score)
-    {
-        user.Score = score;
-        await db.SaveChangesAsync();
-        return Results.Json(user);
-    }
-    return Results.Json(user);
-});
+app.MapDelete("/users/{username}/delete", async (string username, UserContext db, DeleteService deleteService) => await deleteService.DeleteAsync(username, db));
 
-app.MapDelete("users/delete/{username}", async (string username, UserContext db) =>
-{
-    User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
-    if (user == null) return Results.NotFound(new { message = "User not found!" });
-    db.Users.Remove(user);
-    await db.SaveChangesAsync();
-    return Results.Json(user);
-});
-
-app.MapPost("user/{username}/update", async (string username, string new_username, string new_password, UserContext db) =>
-{
-    List<User> users = await db.Users.ToListAsync();
-    User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
-    if (user == null) return Results.NotFound(new { message = "User not found!" });
-    if (new_username != user.Username && new_username != "")
-    {
-        foreach (User u in users)
-        {
-            if (u.Username == new_username) throw new Exception("A user with this username already exists!");
-        }
-        user.Username = new_username;
-    } 
-    if (new_password != user.Password && new_password != "")
-    {
-        user.Password = new_password;
-    }
-    await db.SaveChangesAsync();
-    return Results.Json(user);
-});
+app.MapPut("/users/{username}/update/{new_username}", async (string username, string new_username, UserContext db, UpdateUserService updateUserService) => await updateUserService.UpdateUserAsync(username, new_username, db));
 
 app.Run();
