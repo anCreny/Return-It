@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -15,7 +16,13 @@ public class Racket : MonoBehaviour
     private Vector2 _velocity;
 
     private Vector3 _position;
-    
+    private GameManager _gameManager;
+
+    private void Start()
+    {
+        _gameManager = GameManager.Singleton;
+    }
+
     private void FixedUpdate()
     {
         var currentPosition = transform.position;
@@ -32,13 +39,13 @@ public class Racket : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
+        _gameManager.UpdateScore();
+        
         var ball = col.gameObject.GetComponent<Ball>();
             
         ballSpeed = ball.Speed;
         ballOnCollisionEnterSpeed = col.relativeVelocity;
-
-        var force = (ballSpeed * ballSpeed * ball.Rigidbody.mass) / 2f;
-            
+        Debug.Log(_gameManager.Score);
         var impulse = col.relativeVelocity;
 
         var resulImpulse = impulse + (_velocity * -1);

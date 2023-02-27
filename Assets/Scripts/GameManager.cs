@@ -1,21 +1,49 @@
+
+using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
     private Vector2 _spawnPoint = new (0, 3);
-    [FormerlySerializedAs("shadow")] [SerializeField]
+    [SerializeField]
     private Animator shadowAnimator;
-    [FormerlySerializedAs("ball")] [SerializeField]
+    [SerializeField]
     private Animator ballAnimator;
     [SerializeField] 
     private GameObject ball;
     [SerializeField] 
     private GameObject shadow;
 
+    [SerializeField] 
+    private GameObject scoreText;
+    private static GameManager _singleton;
     private bool _stupidFlag;
+   
+    private int _score;
+    private float _time;
+    public int Score => _score;
+
+    public static GameManager Singleton
+    {
+        get
+        {
+            if (_singleton == null)
+            {
+                _singleton = new GameManager();
+            }
+
+            return _singleton;
+        }
+    }
+
+    public int GetScore()
+    {
+        return _score;
+    }
     void Start()
     {
+        _singleton = this;
         _spawnPoint = GetRandomPoint();
         shadow.transform.position = _spawnPoint;
         ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
@@ -49,8 +77,15 @@ public class GameManager : MonoBehaviour
         return Camera.main.ScreenToWorldPoint(randomScreenPoint);
     }
 
+    public void UpdateScore()
+    {
+        _score += 1;
+    }
+
     private void Update()
     {
-        
+        _time += Time.deltaTime;
+        scoreText.GetComponent<TMP_Text>().text = Score.ToString();
     }
 }
+
