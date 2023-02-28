@@ -12,10 +12,10 @@ public class UpdateUserMiddleware
     }
     public async Task InvokeAsync(HttpContext context)
     {
-        string? username = context.Request.Query["username"];
+        string? old_username = context.Request.Query["old_username"];
         string? new_username = context.Request.Query["new_username"];
         List<User> users = await db.Users.ToListAsync();
-        User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == old_username);
         if (user == null) await context.Response.WriteAsync("User not found!");
         if (new_username != user!.Username && new_username != "")
         {
