@@ -4,23 +4,17 @@ using UnityEngine.Serialization;
 
 public class Racket : MonoBehaviour
 {
-    [FormerlySerializedAs("_ballSpeed")] [SerializeField]
-    private float ballSpeed;
-
-    [FormerlySerializedAs("_ballOnCollisionEnterSpeed")] [SerializeField]
-    private Vector3 ballOnCollisionEnterSpeed;
-
     [FormerlySerializedAs("_speed")] [SerializeField]
     private float speed;
 
     private Vector2 _velocity;
-
-    private Vector3 _position;
-    private GameManager _gameManager;
+    private Vector3 _position; 
+    
+    [SerializeField]
+    private GameManager gameManager;
 
     private void Start()
     {
-        _gameManager = GameManager.Singleton;
     }
 
     private void FixedUpdate()
@@ -39,13 +33,11 @@ public class Racket : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        _gameManager.UpdateScore();
+        gameManager.UpdateScore();
         
         var ball = col.gameObject.GetComponent<Ball>();
-            
-        ballSpeed = ball.Speed;
-        ballOnCollisionEnterSpeed = col.relativeVelocity;
-        Debug.Log(_gameManager.Score);
+        
+        Debug.Log(gameManager.Score);
         var impulse = col.relativeVelocity;
 
         var resulImpulse = impulse + (_velocity * -1);

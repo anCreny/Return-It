@@ -1,6 +1,8 @@
 
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -17,63 +19,66 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] 
     private GameObject scoreText;
-    private static GameManager _singleton;
+
+    [SerializeField] 
+    private TMP_Text time;
+
+    private bool _timerOn = true;
+    
     private bool _stupidFlag;
    
     private int _score;
     private float _time;
     public int Score => _score;
 
-    public static GameManager Singleton
-    {
-        get
-        {
-            if (_singleton == null)
-            {
-                _singleton = new GameManager();
-            }
+    private float _screenWidth;
+    private float _screenHeight;
 
-            return _singleton;
-        }
-    }
+    private bool _inAnimation = true;
 
-    public int GetScore()
-    {
-        return _score;
-    }
+    
+    
     void Start()
     {
-        _singleton = this;
+        Application.targetFrameRate = 300;
+
+        _screenWidth = Camera.main.pixelWidth;
+        _screenHeight = Camera.main.pixelHeight;
+
         _spawnPoint = GetRandomPoint();
         shadow.transform.position = _spawnPoint;
         ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         shadowAnimator.SetBool("StartShadow",true);
     }
+    
+    private bool CheckBallPosition()
+    {
+        var ballPosition = ball.transform.position;
+        var relativeToCameraBallPosition = Camera.main.WorldToScreenPoint(ballPosition);
+        if (!_inAnimation && (relativeToCameraBallPosition.y < 0 || relativeToCameraBallPosition.x < -5 || relativeToCameraBallPosition.x > _screenWidth + 5))
+        {
+            return false;
+        }
+
+        return true;
+    }
+    
+    private void GameOver()
+    {
+        SceneManager.LoadScene("Control");
+    }
 
     private void FixedUpdate()
     {
-        if (_stupidFlag && !ballAnimator.GetCurrentAnimatorStateInfo(0).IsName("Falling"))
+        if (!CheckBallPosition())
         {
-            ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-            ball.transform.localScale = new Vector3(1, 1, 1);
-            _stupidFlag = false;
-        }
-
-        if (!ballAnimator.GetBool("StartFall") && !shadowAnimator.GetCurrentAnimatorStateInfo(0).IsName("Shadow"))
-        {
-            ball.transform.position = _spawnPoint;
-            ballAnimator.SetBool("StartFall",true);
-            shadow.transform.position = new Vector3(100, 100, 100);
-            _stupidFlag = true;
+            GameOver();
         }
     }
 
     private Vector2 GetRandomPoint()
     {
-        var width = Camera.main.pixelWidth;
-        var height = Camera.main.pixelHeight;
-
-        var randomScreenPoint = new Vector2(Random.Range(width * 0.1f, width * 0.9f), Random.Range(height * 0.6f, height * 0.9f));
+        var randomScreenPoint = new Vector2(Random.Range(_screenWidth * 0.1f, _screenWidth * 0.9f), Random.Range(_screenHeight * 0.6f, _screenHeight * 0.9f));
         return Camera.main.ScreenToWorldPoint(randomScreenPoint);
     }
 
@@ -84,8 +89,37 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        _time += Time.deltaTime;
         scoreText.GetComponent<TMP_Text>().text = Score.ToString();
+        
+        if (_timerOn)
+        {
+            _time += Time.deltaTime;
+            var roundedTime = math.round(_time);
+        
+            var minutes = (int)roundedTime / 60;
+            var textMinutes = minutes < 10 ? $"0{minutes} " : $" {minutes}";
+        
+            var seconds = math.round(roundedTime % 60);
+            var textSeconds = seconds < 10 ? $"0{seconds} " : $" {seconds}";
+        
+            time.text = $"{textMinutes} : {textSeconds}";
+        }
+        
+        if (_stupidFlag && !ballAnimator.GetCurrentAnimatorStateInfo(0).IsName("Falling"))
+        {
+            ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            ball.transform.localScale = new Vector3(1, 1, 1);
+            _stupidFlag = false;
+            _inAnimation = false;
+        }
+
+        if (!ballAnimator.GetBool("StartFall") && !shadowAnimator.GetCurrentAnimatorStateInfo(0).IsName("Shadow"))
+        {
+            ball.transform.position = _spawnPoint;
+            ballAnimator.SetBool("StartFall",true);
+            shadow.transform.position = new Vector3(100, 100, 100);
+            _stupidFlag = true;
+        }
     }
 }
 

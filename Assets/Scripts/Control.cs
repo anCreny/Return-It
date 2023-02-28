@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 public class Control : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-    [SerializeField] private Transform platform;
     public void OnDrag(PointerEventData eventData)
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
