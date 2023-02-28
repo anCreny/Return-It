@@ -16,12 +16,20 @@ public class UpdateUserMiddleware
         string? new_username = context.Request.Query["new_username"];
         List<User> users = await db.Users.ToListAsync();
         User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == old_username);
-        if (user == null) await context.Response.WriteAsync("User not found!");
+        if (user == null)
+        {
+            context.Response.StatusCode = 404;
+            await context.Response.WriteAsync("There is no user with this username!");
+        }
         if (new_username != user!.Username && new_username != "")
         {
             foreach (User u in users)
             {
-                if (u.Username == new_username) throw new Exception("A user with this username already exists!");
+                if (u.Username == new_username)
+                {
+                    context.Response.StatusCode = 404;
+                    await context.Response.WriteAsync("A user with this username already exists!");
+                }
             }
             user.Username = new_username;
             await db.SaveChangesAsync();

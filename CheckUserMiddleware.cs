@@ -20,7 +20,15 @@ public class CheckUserMiddleware
         {
             foreach (User u in users)
             {
-                if (u.Username == username) throw new Exception("A user with this username already exists!");
+               
+                if (u.Username == username)
+                {
+             
+                    context.Response.StatusCode = 404;
+                    await context.Response.WriteAsync("A user with this username already exists!");
+                    
+                }
+              
             }
             await next.Invoke(context);
         }
