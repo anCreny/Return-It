@@ -17,6 +17,7 @@ public class CreateUserMiddleware
         User? user = new User { Username = username, Score = 0 };
         await db!.Users.AddAsync(user);
         await db.SaveChangesAsync();
-        await context.Response.WriteAsync("A new user has been successfully created!");    
+        await context.Response.WriteAsync("A new user has been successfully created!");
+        Console.WriteLine("!");
     }
 }
