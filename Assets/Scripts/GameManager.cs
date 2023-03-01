@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
@@ -38,11 +39,9 @@ public class GameManager : MonoBehaviour
     private bool _inAnimation = true;
 
     [SerializeField] private GameObject targetPrefab;
-    
-    private List<RhombusTarget> _targets = new();
 
-    
-    
+    private int _targetCounter;
+
     void Start()
     {
         Application.targetFrameRate = 300;
@@ -54,6 +53,12 @@ public class GameManager : MonoBehaviour
         shadow.transform.position = _spawnPoint;
         ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         shadowAnimator.SetBool("StartShadow",true);
+    }
+
+    public void ReduceTarget()
+    {
+        _targetCounter--;
+        UpdateScore();
     }
     
     private bool CheckBallPosition()
@@ -102,10 +107,10 @@ public class GameManager : MonoBehaviour
             var roundedTime = math.round(_time);
         
             var minutes = (int)roundedTime / 60;
-            var textMinutes = minutes < 10 ? $"0{minutes} " : $" {minutes}";
+            var textMinutes = minutes < 10 ? $"0{minutes}" : $"{minutes}";
         
             var seconds = math.round(roundedTime % 60);
-            var textSeconds = seconds < 10 ? $"0{seconds} " : $" {seconds}";
+            var textSeconds = seconds < 10 ? $"0{seconds}" : $"{seconds}";
         
             time.text = $"{textMinutes} : {textSeconds}";
         }
@@ -126,7 +131,7 @@ public class GameManager : MonoBehaviour
             _stupidFlag = true;
         }
 
-        if (_targets.Count == 0 && !_inAnimation)
+        if (_targetCounter == 0 && !_inAnimation)
         {
             var firstTargetPos = GetRandomPoint();
             var secondTargetPos = GetRandomPoint();
@@ -136,39 +141,15 @@ public class GameManager : MonoBehaviour
 
             target = Instantiate(targetPrefab, secondTargetPos, new Quaternion()).GetComponent<RhombusTarget>();
             CreateLowTarget(target);
-            
         }
-
-
-        var needToBeCleared = false;
-
-        foreach (var target in _targets)
-        {
-            var nullCount = 0;
-            if (target == null)
-            {
-                nullCount++;
-                
-            }
-
-            if (nullCount == _targets.Count)
-            {
-                needToBeCleared = true;
-            }
-        }
-
-        if (needToBeCleared)
-        {
-            _targets = new List<RhombusTarget>();
-        }
-        
-
     }
+    
+    
 
     private void CreateLowTarget(RhombusTarget target)
     {
-        target.SetDurability(2);
-        _targets.Add(target);
+        target.Spawn(2, this);
+        _targetCounter++;
     }
 }
 

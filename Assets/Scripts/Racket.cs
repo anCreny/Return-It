@@ -10,14 +10,14 @@ public class Racket : MonoBehaviour
     private Vector2 _velocity;
     private Vector3 _position;
 
-    private void FixedUpdate()
+    private void Update()
     {
         var currentPosition = transform.position;
 
         var deltaPositions = Vector3.Distance(currentPosition, _position);
         var direction = new Vector2(currentPosition.x - _position.x, currentPosition.y - _position.y).normalized;
 
-        speed = deltaPositions / 0.005f;
+        speed = deltaPositions / Time.deltaTime;
 
         _velocity = direction * speed;
 

@@ -15,7 +15,7 @@ public class Ball : MonoBehaviour
         _rigidbody = gameObject.GetComponent<Rigidbody2D>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         var velocity = _rigidbody.velocity;
         _speed = velocity.magnitude;

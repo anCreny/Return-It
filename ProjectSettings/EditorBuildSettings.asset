@@ -8,8 +8,11 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/FreePlay.unity
     guid: c6ecfa60a3be70341918714853ba352f
+  - enabled: 1
+    path: Assets/Scenes/TargetMode.unity
+    guid: dd2f0ead12abced439bd5d6aefce7b36
   m_configObjects:
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 834a7dd6fbd68c14184ea9933cbd41df, type: 2}

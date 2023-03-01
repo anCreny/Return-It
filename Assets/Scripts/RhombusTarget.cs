@@ -2,29 +2,14 @@ using UnityEngine;
 
 public class RhombusTarget : MonoBehaviour
 {
-    private float _durability = -1;
-    
-    
-    void Start()
+    private int _durability = -1;
+
+    private GameManager _gameManager;
+
+    public void Spawn(int durability, GameManager gameManager)
     {
-        
-    }
-
-    void Update()
-    {
-        
-    }
-
-    public bool SetDurability(float value)
-    {
-        if (_durability == -1)
-        {
-            _durability = value;
-            return true;
-        }
-
-        return false;
-
+        _durability = durability;
+        _gameManager = gameManager;
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -43,6 +28,7 @@ public class RhombusTarget : MonoBehaviour
 
     private void BreakYourself()
     {
+        _gameManager.ReduceTarget();
         Destroy(gameObject);
     }
 }
