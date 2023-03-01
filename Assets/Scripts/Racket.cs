@@ -8,14 +8,7 @@ public class Racket : MonoBehaviour
     private float speed;
 
     private Vector2 _velocity;
-    private Vector3 _position; 
-    
-    [SerializeField]
-    private GameManager gameManager;
-
-    private void Start()
-    {
-    }
+    private Vector3 _position;
 
     private void FixedUpdate()
     {
@@ -33,11 +26,8 @@ public class Racket : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        gameManager.UpdateScore();
-        
         var ball = col.gameObject.GetComponent<Ball>();
         
-        Debug.Log(gameManager.Score);
         var impulse = col.relativeVelocity;
 
         var resulImpulse = impulse + (_velocity * -1);

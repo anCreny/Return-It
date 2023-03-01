@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
@@ -7,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
-    private Vector2 _spawnPoint = new (0, 3);
+    private Vector2 _spawnPoint;
     [SerializeField]
     private Animator shadowAnimator;
     [SerializeField]
@@ -35,6 +36,10 @@ public class GameManager : MonoBehaviour
     private float _screenHeight;
 
     private bool _inAnimation = true;
+
+    [SerializeField] private GameObject targetPrefab;
+    
+    private List<RhombusTarget> _targets = new();
 
     
     
@@ -65,7 +70,7 @@ public class GameManager : MonoBehaviour
     
     private void GameOver()
     {
-        SceneManager.LoadScene("Control");
+        SceneManager.LoadScene("TargetMode");
     }
 
     private void FixedUpdate()
@@ -120,6 +125,50 @@ public class GameManager : MonoBehaviour
             shadow.transform.position = new Vector3(100, 100, 100);
             _stupidFlag = true;
         }
+
+        if (_targets.Count == 0 && !_inAnimation)
+        {
+            var firstTargetPos = GetRandomPoint();
+            var secondTargetPos = GetRandomPoint();
+
+            var target = Instantiate(targetPrefab, firstTargetPos, new Quaternion()).GetComponent<RhombusTarget>();
+            CreateLowTarget(target);
+
+            target = Instantiate(targetPrefab, secondTargetPos, new Quaternion()).GetComponent<RhombusTarget>();
+            CreateLowTarget(target);
+            
+        }
+
+
+        var needToBeCleared = false;
+
+        foreach (var target in _targets)
+        {
+            var nullCount = 0;
+            if (target == null)
+            {
+                nullCount++;
+                
+            }
+
+            if (nullCount == _targets.Count)
+            {
+                needToBeCleared = true;
+            }
+        }
+
+        if (needToBeCleared)
+        {
+            _targets = new List<RhombusTarget>();
+        }
+        
+
+    }
+
+    private void CreateLowTarget(RhombusTarget target)
+    {
+        target.SetDurability(2);
+        _targets.Add(target);
     }
 }
 
