@@ -136,10 +136,10 @@ public class GameManager : MonoBehaviour
             var firstTargetPos = GetRandomPoint();
             var secondTargetPos = GetRandomPoint();
 
-            var target = Instantiate(targetPrefab, firstTargetPos, new Quaternion()).GetComponent<RhombusTarget>();
+            var target = Instantiate(targetPrefab, firstTargetPos, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
             CreateLowTarget(target);
 
-            target = Instantiate(targetPrefab, secondTargetPos, new Quaternion()).GetComponent<RhombusTarget>();
+            target = Instantiate(targetPrefab, secondTargetPos, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
             CreateLowTarget(target);
         }
     }
@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour
 
     private void CreateLowTarget(RhombusTarget target)
     {
-        target.Spawn(2, this);
+        target.Spawn(this);
         _targetCounter++;
     }
 }

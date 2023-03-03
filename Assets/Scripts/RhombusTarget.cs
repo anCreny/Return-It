@@ -2,33 +2,54 @@ using UnityEngine;
 
 public class RhombusTarget : MonoBehaviour
 {
-    private int _durability = -1;
+    [SerializeField] private RhombusLightBehavior light;
+    
+    private int _durability;
 
     private GameManager _gameManager;
 
-    public void Spawn(int durability, GameManager gameManager)
+    private float _border;
+
+    private Rigidbody2D _rigidbody;
+
+    private void Awake()
     {
-        _durability = durability;
+        _durability = 2;
+        _border = Camera.main.ScreenToWorldPoint(Vector3.zero).y;
+        _rigidbody = GetComponent<Rigidbody2D>();
+    }
+
+    public void Spawn(GameManager gameManager)
+    {
         _gameManager = gameManager;
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
+
+    public void ReduceDurability()
     {
         _durability--;
         if (_durability == 0)
         {
             BreakYourself();
-            return;
         }
-        var ball = col.gameObject.GetComponent<Ball>();
-        
-        var impulse = col.relativeVelocity;
-        ball.Rigidbody.AddForce(impulse * -1 * 0.7f, ForceMode2D.Impulse);
+        else if (_durability == 1)
+        {
+            light.ReduceLight();
+        }
+    }
+
+    private void Update()
+    {
+        if (gameObject.transform.position.y < _border)
+        {
+            _gameManager.ReduceTarget();
+            Destroy(gameObject);
+        }
     }
 
     private void BreakYourself()
     {
-        _gameManager.ReduceTarget();
-        Destroy(gameObject);
+        light.TurnOffLight();
+        _rigidbody.bodyType = RigidbodyType2D.Dynamic;
     }
 }
