@@ -9,7 +9,7 @@ public class Control : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragH
 
     private void Start()
     {
-        _screenHeight = Camera.main.ScreenToWorldPoint( new Vector3(0,Camera.main.pixelHeight * 0.35f,0)).y;
+        _screenHeight = Camera.main.ScreenToWorldPoint( new Vector3(0,Camera.main.pixelHeight * 0.45f,0)).y;
     }
 
     public void OnDrag(PointerEventData eventData)

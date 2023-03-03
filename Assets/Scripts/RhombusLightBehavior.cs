@@ -13,13 +13,14 @@ public class RhombusLightBehavior : MonoBehaviour
 
     public void ReduceLight()
     {
-        _particleSystem.maxParticles = 2;
+        _particleSystem.startSize = 1.5f;
         _particleSystem.Clear();
         _particleSystem.Play();
     }
 
     private void OnCollisionEnter2D(Collision2D col)
     {
+        target.SetLastBallContact(col);
         var ball = col.gameObject.GetComponent<Ball>();
         
         var impulse = col.relativeVelocity;
