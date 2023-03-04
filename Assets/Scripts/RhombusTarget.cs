@@ -1,7 +1,8 @@
+using Aditionals;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class RhombusTarget : MonoBehaviour
+public class RhombusTarget : MonoBehaviour, ISpawning
 {
     [SerializeField] private RhombusLightBehavior light;
     

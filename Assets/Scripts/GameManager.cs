@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using Aditionals;
 using TMPro;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,24 +40,32 @@ public class GameManager : MonoBehaviour
 
     private bool _inAnimation = true;
 
-    [SerializeField] private GameObject targetPrefab;
+    [SerializeField] private GameObject crystal;
 
     private int _targetCounter;
 
+    private SpawnHandler _spawnHandler;
+
     void Start()
     {
+        _spawnHandler = new SpawnHandler(2);
+        
         _screenWidth = Camera.main.pixelWidth;
         _screenHeight = Camera.main.pixelHeight;
         
-        _randomizer = new PointRandomizer(Camera.main, _screenHeight, _screenWidth, 0.9f, 0.6f, 0.1f, 0.9f);
+        _randomizer = new PointRandomizer(Camera.main, _screenHeight, _screenWidth, 0.9f, 0.6f, 0.2f, 0.8f);
         
         Application.targetFrameRate = 300;
 
         _spawnPoint = _randomizer.GetRandomPoint();
         
         shadow.transform.position = _spawnPoint;
+        
         ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        
         shadowAnimator.SetBool("StartShadow",true);
+        
+        _spawnHandler.AddInPool(crystal);
     }
 
     public void ReduceTarget()
@@ -91,6 +102,10 @@ public class GameManager : MonoBehaviour
     public void UpdateScore()
     {
         _score += 1;
+        if (_score == 10)
+        {
+            _spawnHandler.CountOfSpawn = 3;
+        }
     }
 
     private void Update()
@@ -129,24 +144,34 @@ public class GameManager : MonoBehaviour
 
         if (_targetCounter == 0 && !_inAnimation)
         {
-            var randomPoint = _randomizer.GetRandomPoint();
-
-            var target = Instantiate(targetPrefab, randomPoint, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
-            CreateLowTarget(target);
-
-            randomPoint = _randomizer.GetRandomPointExclude(target.transform);
-            
-            target = Instantiate(targetPrefab, randomPoint, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
-            CreateLowTarget(target);
+            SpawnTargets();
         }
     }
-    
-    
 
-    private void CreateLowTarget(RhombusTarget target)
+    private void SpawnTargets()
     {
-        target.Spawn(this);
-        _targetCounter++;
+        var poolCount = _spawnHandler.Pool.Count;
+        var countOfSpawn = _spawnHandler.CountOfSpawn;
+        
+        if (poolCount > 0 && countOfSpawn > 0)
+        {
+            var randomTarget = Random.Range(0, poolCount - 1);
+            var randomPoint = _randomizer.GetRandomPoint();
+            
+            var target = Instantiate(_spawnHandler.Pool[randomTarget], randomPoint, new Quaternion(0, 0, 1, 1));
+            target.GetComponent<ISpawning>().Spawn(this);
+            _targetCounter++;
+
+            for (int _ = 0; _ < countOfSpawn - 1; _++)
+            {
+                randomPoint = _randomizer.GetRandomPointExclude(target.transform);
+                randomTarget = Random.Range(0, poolCount - 1);
+                target = Instantiate(_spawnHandler.Pool[randomTarget], randomPoint, new Quaternion(0, 0, 1, 1));
+                target.GetComponent<ISpawning>().Spawn(this);
+                _targetCounter++;
+            }
+        }
+        
     }
 }
 
