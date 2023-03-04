@@ -16,6 +16,8 @@ public class RhombusLightBehavior : MonoBehaviour
         _particleSystem.startSize = 1.5f;
         _particleSystem.Clear();
         _particleSystem.Play();
+        
+        
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -30,7 +32,7 @@ public class RhombusLightBehavior : MonoBehaviour
 
     public void TurnOffLight()
     {
-        _particleSystem.Clear();
+        Destroy(_particleSystem);
         Destroy(GetComponent<PolygonCollider2D>());
     }
 }

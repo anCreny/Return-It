@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class RhombusTarget : MonoBehaviour
 {
@@ -14,8 +15,11 @@ public class RhombusTarget : MonoBehaviour
 
     private Collision2D _ballContact;
 
+    private Light2D _light2D;
+
     private void Awake()
     {
+        _light2D = GetComponentInChildren<Light2D>();
         _durability = 2;
         _border = Camera.main.ScreenToWorldPoint(Vector3.zero).y;
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -42,6 +46,7 @@ public class RhombusTarget : MonoBehaviour
         else if (_durability == 1)
         {
             light.ReduceLight();
+            _light2D.intensity = 0.1f;
         }
     }
 
@@ -57,6 +62,7 @@ public class RhombusTarget : MonoBehaviour
     private void BreakYourself()
     {
         light.TurnOffLight();
+        Destroy(_light2D);
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
         _rigidbody.AddForceAtPosition(_ballContact.relativeVelocity * 0.2f, _ballContact.contacts[0].point, ForceMode2D.Impulse);
     }
