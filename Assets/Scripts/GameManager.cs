@@ -1,11 +1,8 @@
-
-using System;
-using System.Collections.Generic;
+using Aditionals;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -36,6 +33,8 @@ public class GameManager : MonoBehaviour
     private float _screenWidth;
     private float _screenHeight;
 
+    private PointRandomizer _randomizer;
+
     private bool _inAnimation = true;
 
     [SerializeField] private GameObject targetPrefab;
@@ -44,12 +43,15 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Application.targetFrameRate = 300;
-
         _screenWidth = Camera.main.pixelWidth;
         _screenHeight = Camera.main.pixelHeight;
+        
+        _randomizer = new PointRandomizer(Camera.main, _screenHeight, _screenWidth, 0.9f, 0.6f, 0.1f, 0.9f);
+        
+        Application.targetFrameRate = 300;
 
-        _spawnPoint = GetRandomPoint();
+        _spawnPoint = _randomizer.GetRandomPoint();
+        
         shadow.transform.position = _spawnPoint;
         ball.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         shadowAnimator.SetBool("StartShadow",true);
@@ -84,12 +86,6 @@ public class GameManager : MonoBehaviour
         {
             GameOver();
         }
-    }
-
-    private Vector2 GetRandomPoint()
-    {
-        var randomScreenPoint = new Vector2(Random.Range(_screenWidth * 0.1f, _screenWidth * 0.9f), Random.Range(_screenHeight * 0.6f, _screenHeight * 0.9f));
-        return Camera.main.ScreenToWorldPoint(randomScreenPoint);
     }
 
     public void UpdateScore()
@@ -133,13 +129,14 @@ public class GameManager : MonoBehaviour
 
         if (_targetCounter == 0 && !_inAnimation)
         {
-            var firstTargetPos = GetRandomPoint();
-            var secondTargetPos = GetRandomPoint();
+            var randomPoint = _randomizer.GetRandomPoint();
 
-            var target = Instantiate(targetPrefab, firstTargetPos, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
+            var target = Instantiate(targetPrefab, randomPoint, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
             CreateLowTarget(target);
 
-            target = Instantiate(targetPrefab, secondTargetPos, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
+            randomPoint = _randomizer.GetRandomPointExclude(target.transform);
+            
+            target = Instantiate(targetPrefab, randomPoint, new Quaternion(0, 0, 1, 1)).GetComponent<RhombusTarget>();
             CreateLowTarget(target);
         }
     }
