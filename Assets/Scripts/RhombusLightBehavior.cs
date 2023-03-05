@@ -32,6 +32,7 @@ public class RhombusLightBehavior : MonoBehaviour
 
     public void TurnOffLight()
     {
+        GetComponent<SpriteRenderer>().color = Color.gray;
         Destroy(_particleSystem);
         Destroy(GetComponent<PolygonCollider2D>());
     }

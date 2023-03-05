@@ -373,7 +373,7 @@ MonoBehaviour:
   shadow: {fileID: 1383156321}
   scoreText: {fileID: 1526723077}
   time: {fileID: 1119412305}
-  crystal: {fileID: 1593943695915066164, guid: e2d02e0c3c82c9f46a68ac4bed071732, type: 3}
+  crystal: {fileID: 8194107266992665124, guid: 29990b66e38c33f4aa70d70287e55269, type: 3}
 --- !u!4 &44928284
 Transform:
   m_ObjectHideFlags: 0
@@ -1984,7 +1984,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1383156321}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.87, y: 2.04, z: 0}
+  m_LocalPosition: {x: -7.459, y: 1.92, z: 0}
   m_LocalScale: {x: 2.425035, y: 2.425035, z: 2.425035}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using Aditionals;
 using TMPro;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -48,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        //4 is maximum
         _spawnHandler = new SpawnHandler(2);
         
         _screenWidth = Camera.main.pixelWidth;
@@ -102,7 +101,7 @@ public class GameManager : MonoBehaviour
     public void UpdateScore()
     {
         _score += 1;
-        if (_score == 10)
+        if (_score == 30)
         {
             _spawnHandler.CountOfSpawn = 3;
         }
@@ -152,25 +151,22 @@ public class GameManager : MonoBehaviour
     {
         var poolCount = _spawnHandler.Pool.Count;
         var countOfSpawn = _spawnHandler.CountOfSpawn;
-        
-        if (poolCount > 0 && countOfSpawn > 0)
+
+        for (int i = 0; i < countOfSpawn; i++)
         {
-            var randomTarget = Random.Range(0, poolCount - 1);
-            var randomPoint = _randomizer.GetRandomPoint();
-            
-            var target = Instantiate(_spawnHandler.Pool[randomTarget], randomPoint, new Quaternion(0, 0, 1, 1));
+            var randomTargetIndex = Random.Range(0, poolCount);
+            var targetSpawnPoint = _randomizer.GetRandomPoint();
+
+            var target = Instantiate(_spawnHandler.Pool[randomTargetIndex], targetSpawnPoint, new Quaternion(0, 0, 1, 1));
+
+            var objTransform = new ObjectTransform(target.transform);
+            _randomizer.IncreaseExcludingZone(objTransform);
+
             target.GetComponent<ISpawning>().Spawn(this);
             _targetCounter++;
-
-            for (int _ = 0; _ < countOfSpawn - 1; _++)
-            {
-                randomPoint = _randomizer.GetRandomPointExclude(target.transform);
-                randomTarget = Random.Range(0, poolCount - 1);
-                target = Instantiate(_spawnHandler.Pool[randomTarget], randomPoint, new Quaternion(0, 0, 1, 1));
-                target.GetComponent<ISpawning>().Spawn(this);
-                _targetCounter++;
-            }
         }
+        
+        _randomizer.ResetExcludingZone();
         
     }
 }

@@ -1,4 +1,6 @@
 ﻿
+using UnityEngine;
+
 namespace Aditionals
 {
     public interface ISpawning

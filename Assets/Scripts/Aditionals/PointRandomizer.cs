@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Aditionals
 {
@@ -14,6 +15,8 @@ namespace Aditionals
 
         private Camera _camera;
 
+        private List<ObjectTransform> _excludingZone = new ();
+
         public PointRandomizer(Camera camera, float screenHeight, float screenWidth, float top, float bottom, float left, float right)
         {
             _screenHeight = screenHeight;
@@ -27,34 +30,52 @@ namespace Aditionals
             _camera = camera;
         }
 
-        public Vector2 GetRandomPoint()
+        public void ResetExcludingZone()
         {
-            var Xaxis = UnityEngine.Random.Range(_leftBorder, _rightBorder);
-            var Yaxis = UnityEngine.Random.Range(_bottomBorder, _topBorder);
+            _excludingZone = new ();
+        }
+
+        public void IncreaseExcludingZone(ObjectTransform newZone)
+        {
+            _excludingZone.Add(newZone);
+        }
+
+        private Vector2 GetNewRandomPoint()
+        {
+            var Xaxis = Random.Range(_leftBorder, _rightBorder);
+            var Yaxis = Random.Range(_bottomBorder, _topBorder);
 
             var point = _camera.ScreenToWorldPoint(new Vector2(Xaxis, Yaxis));
             return point;
 
         }
 
-        public Vector2 GetRandomPointExclude(Transform excluder)
+        public Vector2 GetRandomPoint()
         {
-            var randomPoint = GetRandomPoint();
+            var randomPoint = GetNewRandomPoint();
 
-            var leftExcluderBorder = excluder.position.x - excluder.localScale.x;
-            var rightExcluderBorder = excluder.position.x + excluder.localScale.x;
-            var topExcluderBorder = excluder.position.y + excluder.localScale.y;
-            var bottomExcluderBorder = excluder.position.y - excluder.localScale.y;
-
-
-            
-            while (!((randomPoint.x > rightExcluderBorder || randomPoint.x < leftExcluderBorder) ||
-                   (randomPoint.y > topExcluderBorder || randomPoint.y < bottomExcluderBorder)))
+            while (CheckZone(randomPoint))
             {
-                randomPoint = GetRandomPoint();
+                randomPoint = GetNewRandomPoint();
             }
 
             return randomPoint;
+        }
+
+        private bool CheckZone(Vector2 point)
+        {
+            var result = false;
+            foreach (var zone in _excludingZone)
+            {
+                result = !((point.x > zone.rightBorder || point.x < zone.leftBorder) ||
+                           (point.y > zone.topBorder || point.y < zone.bottomBorder));
+                if (result)
+                {
+                    break;
+                }
+            }
+
+            return result;
         }
     }
 }
