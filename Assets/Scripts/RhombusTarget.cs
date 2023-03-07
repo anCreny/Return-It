@@ -36,6 +36,11 @@ public class RhombusTarget : MonoBehaviour, ISpawning
         _gameManager = gameManager;
     }
 
+    public ObjectTransform GetTransform()
+    {
+        return new ObjectTransform(transform);
+    }
+
 
     public void ReduceDurability()
     {

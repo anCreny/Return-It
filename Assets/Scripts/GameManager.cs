@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour
     private bool _inAnimation = true;
 
     [SerializeField] private GameObject crystal;
+    [SerializeField] private GameObject sphere;
 
     private int _targetCounter;
 
@@ -101,7 +102,12 @@ public class GameManager : MonoBehaviour
     public void UpdateScore()
     {
         _score += 1;
-        if (_score == 30)
+        if (_score == 10)
+        {
+            _spawnHandler.AddInPool(sphere);
+        }
+
+        if (_score == 20)
         {
             _spawnHandler.CountOfSpawn = 3;
         }
@@ -159,7 +165,7 @@ public class GameManager : MonoBehaviour
 
             var target = Instantiate(_spawnHandler.Pool[randomTargetIndex], targetSpawnPoint, new Quaternion(0, 0, 1, 1));
 
-            var objTransform = new ObjectTransform(target.transform);
+            var objTransform = target.GetComponent<ISpawning>().GetTransform();
             _randomizer.IncreaseExcludingZone(objTransform);
 
             target.GetComponent<ISpawning>().Spawn(this);
