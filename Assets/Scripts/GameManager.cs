@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] 
     private TMP_Text time;
 
+    [SerializeField] private TMP_Text fps;
+
     private bool _timerOn = true;
     
     private bool _stupidFlag;
@@ -40,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject crystal;
     [SerializeField] private GameObject sphere;
+    [SerializeField] private GameObject triangle;
 
     private int _targetCounter;
 
@@ -105,9 +108,16 @@ public class GameManager : MonoBehaviour
         if (_score == 10)
         {
             _spawnHandler.AddInPool(sphere);
+            _spawnHandler.AddInPool(crystal);
         }
 
         if (_score == 20)
+        {
+            _spawnHandler.AddInPool(triangle);
+            _spawnHandler.AddInPool(sphere);
+        }
+
+        if (_score == 30)
         {
             _spawnHandler.CountOfSpawn = 3;
         }
@@ -115,6 +125,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        fps.text = $"{(int) (Time.frameCount / Time.time)} FPS";
+        
         scoreText.GetComponent<TMP_Text>().text = Score.ToString();
         
         if (_timerOn)

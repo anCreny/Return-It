@@ -1,5 +1,70 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5487278086158874989
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5994739986977715765}
+  - component: {fileID: 127382018835038838}
+  - component: {fileID: 1948294063876336461}
+  m_Layer: 6
+  m_Name: Animator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5994739986977715765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5487278086158874989}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8194107266992665130}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &127382018835038838
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5487278086158874989}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9565abcbdba417645a7d0ffc10514433, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &1948294063876336461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5487278086158874989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f1bcc4a32935e34190e0c4da4f14839, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6241184035440729187
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +75,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6241184035440729186}
   - component: {fileID: 6241184035440729185}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +292,7 @@ GameObject:
   - component: {fileID: 7321203844449195149}
   - component: {fileID: 3976309201339434974}
   - component: {fileID: 8819124047835459504}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5099,7 +5164,7 @@ GameObject:
   - component: {fileID: 9175917645869722138}
   - component: {fileID: 8433281729063952728}
   - component: {fileID: 8194107266992665114}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Crystal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5121,6 +5186,7 @@ Transform:
   - {fileID: 8194107267268599075}
   - {fileID: 8194107267416825256}
   - {fileID: 6241184035440729186}
+  - {fileID: 5994739986977715765}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
@@ -5239,7 +5305,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8194107267268599075}
   - component: {fileID: 8194107267268599072}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: low_poly_abstract_design_3012
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5325,7 +5391,7 @@ GameObject:
   - component: {fileID: 8194107267416825257}
   - component: {fileID: 8194107267416825262}
   - component: {fileID: 8194107267416825263}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Isometric Diamond
   m_TagString: Untagged
   m_Icon: {fileID: 0}
