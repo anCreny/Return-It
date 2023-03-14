@@ -1,0 +1,27 @@
+
+
+
+version: "3.4"
+
+services:
+  server:
+    build: ./server
+    volumes: 
+      - .:/server
+    depends_on: 
+      - db 
+    ports: 
+      - 80:80
+    container_name: server
+  db:
+    image: mysql:8.0.32
+    ports: 
+      - 8200:8200
+    environment:
+      MYSQL_DATABASE: return_it_data
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: Terfar43$dG3ER#
+    restart: always
+    volumes: 
+      - ./db:/var/lib/mysql 
+    container_name: return_it_db 
