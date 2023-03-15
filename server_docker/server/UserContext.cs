@@ -11,7 +11,7 @@ public class UserContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         
-         optionsBuilder.UseMySql("server=localhost;user=root;port=8200;password=Terfar43$dG3ER#;database=return_it_data;",
+         optionsBuilder.UseMySql("server=return_it_db;user=root;port=5050;password=root;database=return_it_data;",
          new MySqlServerVersion(new Version(8, 0, 32)));
         
     
