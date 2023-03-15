@@ -1,0 +1,25 @@
+
+
+
+version: "3.4"
+
+services:
+  server:
+    build: ./server
+    volumes: 
+      - .:/server
+    depends_on: 
+      - db 
+    ports: 
+      - 80:80
+    container_name: server
+  db:
+    image: mysql:8.0.32
+    environment:
+      MYSQL_TCP_PORT: 5050
+      MYSQL_DATABASE: return_it_data
+      MYSQL_ROOT_PASSWORD: root
+    restart: always
+    volumes: 
+      - ./db:/var/lib/mysql 
+    container_name: return_it_db
