@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Aditionals;
 using TMPro;
 using Unity.Mathematics;
@@ -19,12 +21,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] 
     private GameObject scoreText;
+    
+    [SerializeField] 
+    private GameObject bestScoreText;
 
     [SerializeField] 
     private TMP_Text time;
-
-    [SerializeField] private TMP_Text fps;
-
     private bool _timerOn = true;
     
     private bool _stupidFlag;
@@ -32,6 +34,7 @@ public class GameManager : MonoBehaviour
     private int _score;
     private float _time;
     public int Score => _score;
+    public int BestScore { get; set; }
 
     private float _screenWidth;
     private float _screenHeight;
@@ -69,6 +72,10 @@ public class GameManager : MonoBehaviour
         shadowAnimator.SetBool("StartShadow",true);
         
         _spawnHandler.AddInPool(crystal);
+
+        var bestScoreStr = File.ReadAllText("./bestScore.txt");
+
+        BestScore = Int32.Parse(bestScoreStr);
     }
 
     public void ReduceTarget()
@@ -91,6 +98,10 @@ public class GameManager : MonoBehaviour
     
     private void GameOver()
     {
+        BestScore = BestScore < _score ? _score : BestScore;
+
+        File.WriteAllText("./bestScore.txt", BestScore.ToString());
+        
         SceneManager.LoadScene("TargetMode");
     }
 
@@ -125,9 +136,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        fps.text = $"{(int) (Time.frameCount / Time.time)} FPS";
-        
         scoreText.GetComponent<TMP_Text>().text = Score.ToString();
+        bestScoreText.GetComponent<TMP_Text>().text = BestScore.ToString();
         
         if (_timerOn)
         {
